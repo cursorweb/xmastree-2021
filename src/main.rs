@@ -1,7 +1,8 @@
 // use colorful::Color;
 // use colorful::Colorful;
 
+const DEFAULT_TREE: &str = include_str!("./tree.txt");
+
 fn main() {
-    let tree = include_str!("./tree.txt");
-    println!("{}", tree);
+    println!("{}", DEFAULT_TREE);
 }
