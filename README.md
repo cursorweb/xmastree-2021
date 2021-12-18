@@ -13,15 +13,19 @@ Taking a break from coding big projects
 xmastree.exe -t "tree.txt" -b 5 -o "tree.rs" -ot rs
 ```
 
-* `-t` The tree file to use
-* `-b` How many lines *from the last line* is the base of the tree
+* `-t`/`tree` The tree file to use
+* `-b`/`base` How many lines *from the last line* is the base of the tree
     
     For example the [default tree](./src/tree.txt) has a base length of **5**.
 
-* `-o` The file to output to, e.g. `main.rs` `xmas.txt`
-* `-ot` The output type, can be the following:
+    Defaults to 0
+
+* `-o`/`output` The file to output to, e.g. `main.rs` `xmas.txt`
+* `-f`/`type` The output type, can be the following:
     * `rs` - An rs file that literally prints the tree (does use the colorful module)
     * `text` - A plaintext file of the resulting tree, all colors will be lost.
+
+    Without this argument, the tree will print into the terminal!
 
 ### Movement
 The `X` marker indicates your cursor. 
