@@ -35,6 +35,8 @@ fn main() {
 
     // ornaments
     let mut orn: HashMap<Point, Color> = HashMap::new();
+    let colors = [Color::Blue, Color::Cyan, Color::DarkGreen, Color::White, Color::Black, Color::Yellow, Color::Red, Color::Magenta, Color::DarkBlue];
+    let mut curr_color = colors[0];
 
     let mut stdout = stdout();
     enable_raw_mode().unwrap();
@@ -98,6 +100,13 @@ fn main() {
                 modifiers: KeyModifiers::NONE,
             }) => {
                 orn.insert(Point::new(x, y), Color::Black);
+            }
+
+            Event::Key(KeyEvent {
+                code: KeyCode::Esc,
+                modifiers: KeyModifiers::NONE,
+            }) => {
+                orn.remove(&Point::new(x, y));
             }
 
             Event::Key(KeyEvent {

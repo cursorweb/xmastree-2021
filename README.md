@@ -41,3 +41,6 @@ Press `esc` to remove an ornament the marker is on.
 Press `ctrl` to reset the entire tree.
 
 When you are done, press `q` to generate the tree!
+
+### Disclaimer
+Apparently this program works on windows but not on replit wow
