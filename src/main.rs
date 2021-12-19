@@ -2,7 +2,7 @@ use crossterm::{
     cursor,
     event::{read, Event, KeyCode, KeyEvent, KeyModifiers},
     execute,
-    style::Print,
+    style::{Print, Color},
     terminal::{disable_raw_mode, enable_raw_mode, Clear, ClearType},
 };
 
@@ -12,7 +12,7 @@ use parse_args::{parse_args, ParseOut};
 mod tree;
 use tree::{render_tree, Point};
 
-use std::io::stdout;
+use std::{io::stdout, collections::HashMap};
 
 fn main() {
     let ParseOut {
@@ -32,7 +32,7 @@ fn main() {
 
     let mut x = 0;
     let mut y = 0;
-    let points: Vec<Point> = vec![Point::new(1, 1)];
+    let points: HashMap<Point, Color> = HashMap::new();
 
     let mut stdout = stdout();
     enable_raw_mode().unwrap();
@@ -42,7 +42,7 @@ fn main() {
         Clear(ClearType::All),
         cursor::Hide,
         cursor::MoveTo(0, 0),
-        Print(render_tree(&tree_file, width as usize)),
+        Print(render_tree(&tree_file, width as usize, height as usize, base)),
         cursor::MoveTo(0, 0),
         Print('X')
     )
@@ -120,7 +120,7 @@ fn main() {
         execute!(
             stdout,
             cursor::MoveTo(0, 0),
-            Print(render_tree(&tree_file, width as usize)),
+            Print(render_tree(&tree_file, width as usize, height as usize, base)),
             cursor::MoveTo(x as u16, y as u16),
             Print('X')
         )
