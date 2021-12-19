@@ -142,6 +142,13 @@ fn main() {
             }
 
             Event::Key(KeyEvent {
+                code: KeyCode::Char('`'),
+                modifiers: KeyModifiers::NONE
+            }) => {
+                orn.drain();
+            }
+
+            Event::Key(KeyEvent {
                 code: KeyCode::Char('q'),
                 modifiers: KeyModifiers::NONE,
             }) => {
@@ -165,7 +172,7 @@ fn main() {
                     ))
                 )
                 .unwrap();
-                render_ornaments(&mut stdout, &orn);
+                render_ornaments(&mut stdout, &orn, 1);
                 execute!(stdout, cursor::MoveTo(0, 0)).unwrap();
                 break;
             }
@@ -198,7 +205,7 @@ fn main() {
         )
         .unwrap();
 
-        render_ornaments(&mut stdout, &orn);
+        render_ornaments(&mut stdout, &orn, 0);
 
         execute!(
             stdout,

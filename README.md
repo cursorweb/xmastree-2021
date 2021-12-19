@@ -38,6 +38,9 @@ Press `enter` to place the ornament down.
 
 Press `esc` to remove an ornament the marker is on.
 
-Press `ctrl` to reset the entire tree.
+Press `` ` `` to reset the entire tree.
 
 When you are done, press `q` to generate the tree!
+
+## Credits
+[@KumaPaul](https://replit.com/@KumuPaul) for getting this to work on replit!

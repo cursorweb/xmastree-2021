@@ -45,11 +45,11 @@ pub fn render_tree(tree_file: &Vec<String>, width: usize, height: usize, base: u
         .join("\r\n")
 }
 
-pub fn render_ornaments(stdout: &mut Stdout, ornaments: &HashMap<Point, Color>) {
+pub fn render_ornaments(stdout: &mut Stdout, ornaments: &HashMap<Point, Color>, offset: u16) {
     for (point, color) in ornaments {
         execute!(
             stdout,
-            cursor::MoveTo(point.x, point.y),
+            cursor::MoveTo(point.x, point.y + offset),
             Print("O".with(*color))
         )
         .unwrap();

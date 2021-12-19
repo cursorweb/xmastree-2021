@@ -1,6 +1,8 @@
 use clap::{App, Arg};
 use std::{process::exit, fs};
 
+use colorful::Colorful;
+
 
 // config
 const DEFAULT_TREE: &str = include_str!("./tree.txt");
@@ -44,6 +46,14 @@ pub fn parse_args() -> ParseOut {
                 .takes_value(true)
                 .help("The output type, 'rs' or 'text'"),
         )
+        .after_help::<&str>(format!("{}
+The {} marker indicates your cursor.
+Use the {} to move the cursor! It is colored based on the selected color.
+Use {} to cycle to the previous color and {} to cycle to the next color.
+Press {} to place the ornament down.
+Press {} to remove an ornament the marker is on.
+Press {} to reset the entire tree.
+When you are done, press {} to generate the tree!", "EDITOR USAGE".bold().underlined(), "X".blue(), "ARROW KEYS".blue(), "e".blue(), "r".blue(), "enter".blue(), "esc".blue(), "ctrl".blue(), "q".blue()).as_str())
         .get_matches();
     
     let custom_tree;
