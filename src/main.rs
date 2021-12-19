@@ -1,18 +1,18 @@
-use crossterm::cursor;
-use crossterm::event::{read, Event, KeyCode, KeyEvent, KeyModifiers};
-use crossterm::execute;
-use crossterm::style::Print;
-use crossterm::terminal::{disable_raw_mode, enable_raw_mode, Clear, ClearType};
+use crossterm::{
+    cursor,
+    event::{read, Event, KeyCode, KeyEvent, KeyModifiers},
+    execute,
+    style::Print,
+    terminal::{disable_raw_mode, enable_raw_mode, Clear, ClearType},
+};
 
 mod parse_args;
 use parse_args::{parse_args, ParseOut};
 
-use std::io::stdout;
+mod tree;
+use tree::{render_tree, Point};
 
-enum _Tree {
-    Text,
-    Rust,
-}
+use std::io::stdout;
 
 fn main() {
     let ParseOut {
@@ -22,23 +22,27 @@ fn main() {
     } = parse_args();
 
     let width = tree_file.iter().fold(tree_file[0].len(), |prev, curr| {
-        if prev < curr.len() { curr.len() } else { prev }
+        if prev < curr.len() {
+            curr.len()
+        } else {
+            prev
+        }
     }) as i32;
-    let height = tree_file.len() as i32;
-
-    let mut stdout = stdout();
-
-    enable_raw_mode().unwrap();
+    let height = tlen as i32;
 
     let mut x = 0;
     let mut y = 0;
+    let points: Vec<Point> = vec![Point::new(1, 1)];
+
+    let mut stdout = stdout();
+    enable_raw_mode().unwrap();
 
     execute!(
         stdout,
         Clear(ClearType::All),
         cursor::Hide,
         cursor::MoveTo(0, 0),
-        Print(tree_file.join("\n")),
+        Print(render_tree(&tree_file, width as usize)),
         cursor::MoveTo(0, 0),
         Print('X')
     )
@@ -92,25 +96,35 @@ fn main() {
                     Clear(ClearType::All),
                     cursor::Show,
                     cursor::MoveTo(0, 0)
-                ).unwrap();
+                )
+                .unwrap();
                 break;
             }
 
             _ => (),
         }
 
-        if x < 0 { x = width; }
-        if x > width { x = 0; }
-        if y < 0 { y = height; }
-        if y > height { y = 0; }
+        if x < 0 {
+            x = width - 1;
+        }
+        if x >= width {
+            x = 0;
+        }
+        if y < 0 {
+            y = height - 1;
+        }
+        if y >= height {
+            y = 0;
+        }
 
         execute!(
             stdout,
             cursor::MoveTo(0, 0),
-            Print(tree_file.join("\n")),
+            Print(render_tree(&tree_file, width as usize)),
             cursor::MoveTo(x as u16, y as u16),
             Print('X')
-        ).unwrap();
+        )
+        .unwrap();
     }
 
     //disabling raw mode
