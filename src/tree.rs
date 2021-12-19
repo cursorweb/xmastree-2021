@@ -42,7 +42,7 @@ pub fn render_tree(tree_file: &Vec<String>, width: usize, height: usize, base: u
             out
         })
         .collect::<Vec<String>>()
-        .join("\n")
+        .join("\r\n")
 }
 
 pub fn render_ornaments(stdout: &mut Stdout, ornaments: &HashMap<Point, Color>) {

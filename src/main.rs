@@ -2,7 +2,7 @@ use crossterm::{
     cursor,
     event::{read, Event, KeyCode, KeyEvent, KeyModifiers},
     execute,
-    style::{Color, Print},
+    style::{Color, Print, Stylize},
     terminal::{disable_raw_mode, enable_raw_mode, Clear, ClearType},
 };
 
@@ -35,8 +35,18 @@ fn main() {
 
     // ornaments
     let mut orn: HashMap<Point, Color> = HashMap::new();
-    let colors = [Color::Blue, Color::Cyan, Color::DarkGreen, Color::White, Color::Black, Color::Yellow, Color::Red, Color::Magenta, Color::DarkBlue];
-    let mut curr_color = colors[0];
+    let colors = [
+        Color::Blue,
+        Color::Cyan,
+        Color::DarkMagenta,
+        Color::White,
+        Color::Black,
+        Color::Yellow,
+        Color::Red,
+        Color::Magenta,
+        Color::DarkBlue,
+    ];
+    let mut curr_color = 0;
 
     let mut stdout = stdout();
     enable_raw_mode().unwrap();
@@ -53,7 +63,7 @@ fn main() {
             base
         )),
         cursor::MoveTo(0, 0),
-        Print('X')
+        Print('X'.with(colors[curr_color]))
     )
     .unwrap();
 
@@ -99,7 +109,7 @@ fn main() {
                 code: KeyCode::Enter,
                 modifiers: KeyModifiers::NONE,
             }) => {
-                orn.insert(Point::new(x, y), Color::Black);
+                orn.insert(Point::new(x, y), colors[curr_color]);
             }
 
             Event::Key(KeyEvent {
@@ -110,10 +120,31 @@ fn main() {
             }
 
             Event::Key(KeyEvent {
+                code: KeyCode::Char('e'),
+                modifiers: KeyModifiers::NONE,
+            }) => {
+                if curr_color == 0 {
+                    curr_color = colors.len() - 1;
+                } else {
+                    curr_color -= 1;
+                }
+            }
+
+            Event::Key(KeyEvent {
+                code: KeyCode::Char('r'),
+                modifiers: KeyModifiers::NONE,
+            }) => {
+                if curr_color == colors.len() - 1 {
+                    curr_color = 0;
+                } else {
+                    curr_color += 1;
+                }
+            }
+
+            Event::Key(KeyEvent {
                 code: KeyCode::Char('q'),
                 modifiers: KeyModifiers::NONE,
             }) => {
-                // todo: print
                 execute!(
                     stdout,
                     Clear(ClearType::All),
@@ -121,6 +152,21 @@ fn main() {
                     cursor::MoveTo(0, 0)
                 )
                 .unwrap();
+
+                // print
+                execute!(
+                    stdout,
+                    cursor::MoveTo(0, 1),
+                    Print(render_tree(
+                        &tree_file,
+                        width as usize,
+                        height as usize,
+                        base
+                    ))
+                )
+                .unwrap();
+                render_ornaments(&mut stdout, &orn);
+                execute!(stdout, cursor::MoveTo(0, 0)).unwrap();
                 break;
             }
 
@@ -154,7 +200,12 @@ fn main() {
 
         render_ornaments(&mut stdout, &orn);
 
-        execute!(stdout, cursor::MoveTo(x as u16, y as u16), Print('X')).unwrap();
+        execute!(
+            stdout,
+            cursor::MoveTo(x as u16, y as u16),
+            Print('X'.with(colors[curr_color]))
+        )
+        .unwrap();
     }
 
     //disabling raw mode

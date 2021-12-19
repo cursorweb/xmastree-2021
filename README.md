@@ -32,7 +32,7 @@ The `X` marker indicates your cursor.
 
 Use the `arrow keys` to move the cursor! It is colored based on the selected color.
 
-Use numbers `1-9` to change the color!
+Use `e` to go the previous color and use `r` to go to the next color.
 
 Press `enter` to place the ornament down.
 
@@ -41,6 +41,3 @@ Press `esc` to remove an ornament the marker is on.
 Press `ctrl` to reset the entire tree.
 
 When you are done, press `q` to generate the tree!
-
-### Disclaimer
-Apparently this program works on windows but not on replit wow
