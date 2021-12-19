@@ -4,8 +4,6 @@ use crossterm::execute;
 use crossterm::style::Print;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode, Clear, ClearType};
 
-use colorful::{Color, Colorful};
-
 mod parse_args;
 use parse_args::{parse_args, ParseOut};
 
@@ -23,46 +21,98 @@ fn main() {
         base,
     } = parse_args();
 
+    let width = tree_file.iter().fold(tree_file[0].len(), |prev, curr| {
+        if prev < curr.len() { curr.len() } else { prev }
+    }) as i32;
+    let height = tree_file.len() as i32;
+
     let mut stdout = stdout();
-    //going into raw mode
+
     enable_raw_mode().unwrap();
 
-    //clearing the screen, going to top left corner and printing welcoming message
-    execute!(stdout, Clear(ClearType::All), cursor::MoveTo(0, 0), Print(r#"ctrl + q to exit, ctrl + h to print "Hello world", alt + t to print "crossterm is cool""#))
-            .unwrap();
+    let mut x = 0;
+    let mut y = 0;
 
-    //key detection
+    execute!(
+        stdout,
+        Clear(ClearType::All),
+        cursor::Hide,
+        cursor::MoveTo(0, 0),
+        Print(tree_file.join("\n")),
+        cursor::MoveTo(0, 0),
+        Print('X')
+    )
+    .unwrap();
+
     loop {
-        //going to top left corner
-        execute!(stdout, cursor::MoveTo(0, 0)).unwrap();
-
-        //matching the key
         match read().unwrap() {
-            //i think this speaks for itself
             Event::Key(KeyEvent {
-                code: KeyCode::Char('h'),
+                code: KeyCode::Char('w'),
                 modifiers: KeyModifiers::NONE,
-                //clearing the screen and printing our message
-            }) => execute!(
-                stdout,
-                Clear(ClearType::All),
-                Print("Hello world!".color(Color::Blue))
-            )
-            .unwrap(),
+            })
+            | Event::Key(KeyEvent {
+                code: KeyCode::Up,
+                modifiers: KeyModifiers::NONE,
+            }) => y -= 1,
+
             Event::Key(KeyEvent {
-                code: KeyCode::Char('t'),
+                code: KeyCode::Char('a'),
                 modifiers: KeyModifiers::NONE,
-            }) => execute!(stdout, Clear(ClearType::All), Print("crossterm is cool")).unwrap(),
+            })
+            | Event::Key(KeyEvent {
+                code: KeyCode::Left,
+                modifiers: KeyModifiers::NONE,
+            }) => x -= 1,
+
+            Event::Key(KeyEvent {
+                code: KeyCode::Char('s'),
+                modifiers: KeyModifiers::NONE,
+            })
+            | Event::Key(KeyEvent {
+                code: KeyCode::Down,
+                modifiers: KeyModifiers::NONE,
+            }) => y += 1,
+
+            Event::Key(KeyEvent {
+                code: KeyCode::Char('d'),
+                modifiers: KeyModifiers::NONE,
+            })
+            | Event::Key(KeyEvent {
+                code: KeyCode::Right,
+                modifiers: KeyModifiers::NONE,
+            }) => x += 1,
+
             Event::Key(KeyEvent {
                 code: KeyCode::Char('q'),
                 modifiers: KeyModifiers::NONE,
-            }) => break,
+            }) => {
+                // todo: print
+                execute!(
+                    stdout,
+                    Clear(ClearType::All),
+                    cursor::Show,
+                    cursor::MoveTo(0, 0)
+                ).unwrap();
+                break;
+            }
+
             _ => (),
         }
+
+        if x < 0 { x = width; }
+        if x > width { x = 0; }
+        if y < 0 { y = height; }
+        if y > height { y = 0; }
+
+        execute!(
+            stdout,
+            cursor::MoveTo(0, 0),
+            Print(tree_file.join("\n")),
+            cursor::MoveTo(x as u16, y as u16),
+            Print('X')
+        ).unwrap();
     }
 
     //disabling raw mode
     disable_raw_mode().unwrap();
-
-    println!("{:?}\n{:?}", tree_file, &tree_file[tlen - base..]);
 }
