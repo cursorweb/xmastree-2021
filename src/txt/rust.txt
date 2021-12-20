@@ -1,0 +1,4 @@
+// generated with XMASTREE2021
+fn main() {
+    println!(r#"tree"#);
+}

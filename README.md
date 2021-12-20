@@ -21,11 +21,15 @@ xmastree.exe -t "tree.txt" -b 5 -o "tree.rs" -ot rs
     Defaults to 0
 
 * `-o`/`output` The file to output to, e.g. `main.rs` `xmas.txt`
-* `-f`/`type` The output type, can be the following:
-    * `rs` - An rs file that literally prints the tree (does use the colorful module)
-    * `text` - A plaintext file of the resulting tree, all colors will be lost.
 
-    Without this argument, the tree will print into the terminal!
+    Without this, it will be `tree.out`
+
+* `-f`/`type` The output type, can be the following:
+    * `rs`/`rust` - An rs file that literally prints the tree (does use the colorful module)
+    * `txt`/`text` - A plaintext file of the resulting tree, all colors will be lost.
+    * `o`/`none` - It will only be printed to the terminal! (optional)
+
+    The tree will *always* print into the terminal!
 
 ### Movement
 The `X` marker indicates your cursor. 

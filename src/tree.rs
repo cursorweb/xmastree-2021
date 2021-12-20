@@ -4,11 +4,6 @@ use crossterm::{
 };
 use std::{collections::HashMap, io::Stdout};
 
-pub enum _OutTree {
-    Text,
-    Rust,
-}
-
 #[derive(Eq, PartialOrd, Ord, Hash)]
 pub struct Point {
     x: u16,

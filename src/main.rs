@@ -7,19 +7,27 @@ use crossterm::{
 };
 
 mod parse_args;
-use parse_args::{parse_args, ParseOut};
+use parse_args::parse_args;
 
 mod tree;
 use tree::{render_ornaments, render_tree, Point};
 
+mod gen;
+
 use std::{collections::HashMap, io::stdout};
 
 fn main() {
-    let ParseOut {
-        tree_file,
-        tlen,
-        base,
-    } = parse_args();
+    let args = parse_args();
+    // ParseOut {
+    //     tree_file,
+    //     tlen,
+    //     base,
+    //     out_type
+    // } = o;
+    let tree_file = &args.tree_file;
+    let tlen = args.tlen;
+    let base = args.base;
+    let out_type = &args.out_type;
 
     let width = tree_file.iter().fold(tree_file[0].len(), |prev, curr| {
         if prev < curr.len() {
@@ -34,17 +42,17 @@ fn main() {
     let mut y = 0i32;
 
     // ornaments
-    let mut orn: HashMap<Point, Color> = HashMap::new();
+    let mut orns: HashMap<Point, Color> = HashMap::new();
     let colors = [
         Color::Blue,
         Color::Cyan,
-        Color::DarkMagenta,
         Color::White,
         Color::Black,
         Color::Yellow,
         Color::Red,
         Color::Magenta,
-        Color::DarkBlue,
+        Color::Grey,
+        Color::DarkBlue
     ];
     let mut curr_color = 0;
 
@@ -109,14 +117,14 @@ fn main() {
                 code: KeyCode::Enter,
                 modifiers: KeyModifiers::NONE,
             }) => {
-                orn.insert(Point::new(x, y), colors[curr_color]);
+                orns.insert(Point::new(x, y), colors[curr_color]);
             }
 
             Event::Key(KeyEvent {
                 code: KeyCode::Esc,
                 modifiers: KeyModifiers::NONE,
             }) => {
-                orn.remove(&Point::new(x, y));
+                orns.remove(&Point::new(x, y));
             }
 
             Event::Key(KeyEvent {
@@ -145,7 +153,7 @@ fn main() {
                 code: KeyCode::Char('`'),
                 modifiers: KeyModifiers::NONE
             }) => {
-                orn.drain();
+                orns.drain();
             }
 
             Event::Key(KeyEvent {
@@ -172,7 +180,7 @@ fn main() {
                     ))
                 )
                 .unwrap();
-                render_ornaments(&mut stdout, &orn, 1);
+                render_ornaments(&mut stdout, &orns, 1);
                 execute!(stdout, cursor::MoveTo(0, 0)).unwrap();
                 break;
             }
@@ -205,7 +213,7 @@ fn main() {
         )
         .unwrap();
 
-        render_ornaments(&mut stdout, &orn, 0);
+        render_ornaments(&mut stdout, &orns, 0);
 
         execute!(
             stdout,
@@ -217,4 +225,5 @@ fn main() {
 
     //disabling raw mode
     disable_raw_mode().unwrap();
+    args.render(out_type, &orns);
 }
