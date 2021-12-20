@@ -7,6 +7,7 @@ A fun christmas tree where you can add ornaments! Then, you can export the file 
 Taking a break from coding big projects
 
 ## Screenshots
+![Tree](./static/tree.png)
 
 ## Usage
 ```
