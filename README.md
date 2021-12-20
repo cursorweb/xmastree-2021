@@ -8,6 +8,11 @@ Taking a break from coding big projects
 
 ## Screenshots
 ![Tree](./static/tree.png)
+Repl: https://replit.com/@Coder100/XMASTREE2021-Generate-cool-christmas-trees
+
+Github: https://github.com/cursorweb/xmastree-2021
+
+Youtube: https://youtu.be/EtKOtUh3Oz4
 
 ## Usage
 ```
